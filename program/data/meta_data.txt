@@ -1,0 +1,9 @@
+ID	Sample	Organism	Tissue	Protocol	Is coverslipped?	Number of Spots Under Tissue	Number of UMIs per spot, average	Number of genes per spot, average	Percent mitochondrial content, average	Percent ribosomal content, average	Cell number, mean	Cell number, SD
+3	RatColon	Rat	Colon	FF-polyA	wCS	1453	21526	4580	6.9	9.4	29	15
+17	PDAC_DonorA_FF-polyA	Human	PDAC	FF-polyA	woCS	2802	7299	2950	6.3	12.0	14	6
+24	PDAC_DonorA_FFPE-polyA	Human	PDAC	FFPE-polyA	wCS	2174	1630	899	1.9	6.0	19	10
+25	PDAC_DonorA_FFPE-probes	Human	PDAC	FFPE-probes	wCS	2197	31044	7265	0.0	0.0	15	8
+26	PDAC_DonorB_FFPE-probes	Human	PDAC	FFPE-probes	wCS	3164	3817	1677	0.0	0.0	16	9
+27	PDAC_DonorC_FFPE-probes	Human	PDAC	FFPE-probes	wCS	2258	2361	1248	0.0	0.0	16	10
+33	Syng_B16	Mouse	B16, d16	FF-polyA	wCS	3090	22080	4489	1.1	24.2	21	9
+39	Syng_MC38	Mouse	MC38, d16	FF-polyA	wCS	1909	31854	5710	0.7	26.7	30	8

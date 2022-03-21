@@ -1,0 +1,13 @@
+# -----------------------------------
+# element  - Selector id/class/css for the ui element that needs to be highlighted during the walkthrough.
+# position - position of intro text.
+# title    - Heading/Title for the Intro Text
+# intro    - Text for introduction of the element.
+# -----------------------------------
+"element","position","title","intro"
+
+
+".btn-box-tool","left-bottom","Collapsible Boxes","This application has collapsible sections for information and analysis.<br><br>Sections can be expanded or collapsed as desired by clicking the small icon in the top right corner."
+".box-header","auto","Application Information","Expand this section to view important information about the data and application."
+"#stBoxList","bottom","Visualization Pane", "This is the primary interactive panel for the application.  Use the options on the left side to setup your plot parameters for analysis and visualization.  <br><br> Pressing the blue "Create/Update Plot" button will create the spatial plot in the right side of the panel.<br<br> Pressing the "Close" button will close the entire visualization pane. <br><br><i>Reminder: the visualization panes can be collapsed using the icon in the top right corner</i>"
+"#newBoxButton","auto","Add a Visualization Pane", "Press this button to add an additional visualization pane above the current one for comparative or additional analysis.  <br><br> Visualization panes are independent of one another."
