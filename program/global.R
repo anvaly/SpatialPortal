@@ -19,7 +19,7 @@ library(rintrojs)
 
 source('program/fxn/stBox_module.R')
 source('program/fxn/supporting.R')
-
+source('program/modules/walkThrough.R')
 
 # -- Setup your Application --
 set_app_parameters(title       = "BMS Spatial Portal",
