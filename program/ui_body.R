@@ -65,7 +65,7 @@ boxList <- tagList(
 )
 
 loginModal <- bsModal(id      = "loginModal",
-                      title   = "Spatial Transcriptomics Application",
+                      title   = "BMS Spatial Portal",
                       trigger = NULL,
                       size    = "small",
                       tags$head(tags$script("$(document).ready(function(){$('#loginModal').modal({backdrop: 'static', keyboard: false});});"),
