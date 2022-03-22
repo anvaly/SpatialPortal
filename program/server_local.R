@@ -31,6 +31,7 @@ library(uuid)
 userSel           <- reactiveValues()
 userSel$boxIds    <- list()
 userSel$caller_id <- NULL
+userSel$logged_in <- FALSE
 
 # -- FUNCTIONS --
 
@@ -120,9 +121,28 @@ observeEvent(TRUE, {
             logger = ss_userAction.Log)
 }, once = TRUE)
 
+observeEvent(input$loginButton, {
+    valid_password <- !is.null(input$password) && (input$password == sg_password)
+
+    feedbackDanger("password",
+                   !valid_password,
+                   "Incorrect password")
+
+    if (valid_password) {
+        userSel$logged_in <- TRUE
+        toggleModal(session, "loginModal", "close")
+    } else {
+        updateTextInput(inputId = "password", value = "")
+    }
+})
 
 observeEvent(input$newBoxButton, {
     add_box()
     loginfo("Added new spatial visualization box to list", logger = ss_userAction.Log)
 })
 
+output$logged_in <- reactive({
+    userSel$logged_in
+})
+
+outputOptions(output, "logged_in", suspendWhenHidden = FALSE)

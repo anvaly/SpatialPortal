@@ -64,6 +64,35 @@ boxList <- tagList(
                tags$div(id = "stBoxList")))
 )
 
+loginModal <- bsModal(id      = "loginModal",
+                      title   = "Spatial Transcriptomics Application",
+                      trigger = NULL,
+                      size    = "small",
+                      tags$head(tags$script("$(document).ready(function(){$('#loginModal').modal({backdrop: 'static', keyboard: false});});"),
+                                tags$style("#loginModal .modal-header button.close{display:none;}"),
+                                tags$style("#loginModal .modal-title {font-weight:bold;}"),
+                                tags$style("#loginModal .modal-footer {display:none;}")),
+                      tags$p(style = "font-weight: bold; text-align: center;",
+                              "Pre-Release Password Required"),
+                      tags$p("A password is required to access this application prior to the publication date for the paper containing the data.  Please contact the collaborators you are working with for the password if you do not know it."),
+                      passwordInput(inputId     = "password",
+                                    label       = NULL,
+                                    value       = "",
+                                    width       = "100%",
+                                    placeholder = "Password"),
+                      bsButton(inputId = "loginButton",
+                               label   = "Continue",
+                               width   = "100%"))
+
+appBody <- if (g_require_password) {
+    tagList(loginModal,
+            conditionalPanel(condition = "output.logged_in",
+                             topElements,
+                             boxList))
+} else {
+    tagList(topElements, boxList)
+}
+
 
 # -- Register Elements in the ORDER SHOWN in the UI
-add_ui_body(list(headerChanges, topElements, boxList))
+add_ui_body(list(headerChanges, appBody))
