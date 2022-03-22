@@ -8,6 +8,35 @@ st_data_class <- setClass("st_data",
                                        top_genes = "ANY"))
 
 
+#' get_app_password
+#'   Get app password from password file. If file cannot be found or cannot be read, stop the app.
+#'
+#' @return char
+get_app_password <- function() {
+    app_password <- NULL
+    tryCatch({
+        if (is.null(g_password_file) ||
+            g_password_file == ""    ||
+            !file.exists(g_password_file)) {
+            stopApp("Current 'g_password_file' setup is invalid or file does not exist. Please check your setup")
+        } else {
+            app_password <- readLines(g_password_file, 1)
+            if (any(is.null(app_password),
+                    length(app_password) == 0,
+                    app_password == "")) {
+                stopApp("Current 'g_password_file' points to an empty or corrupted file. Please check your setup")
+            }
+        }
+
+    },
+    error = function(e) {
+        stopApp(glue("Unable to read application password from file: ", g_password_file, " due to: ", e$message, .null = "NULL"))
+    })
+
+    app_password
+}
+
+
 #' read_samples_data
 #'   Read samples metadata file into a data.frame, add column with sample file names
 #'   and remove samples with no sample file.
