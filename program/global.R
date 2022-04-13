@@ -17,6 +17,8 @@ library(stringr)
 library(shinyjs)
 library(rintrojs)
 
+options(dplyr.summarise.inform = FALSE)
+
 source('program/fxn/stBox_module.R')
 source('program/fxn/supporting.R')
 source('program/modules/walkThrough.R')
