@@ -149,11 +149,11 @@ stBoxServer <- function(id,
 
         observeEvent(input$plotScalingRadio, {
             if (is_valid_selection(input$plotScalingRadio) &&
-                (internal$plotScaling != input$plotScalingRadio)) {
+                ((length(internal$plotScaling) == 1 && internal$plotScaling != input$plotScalingRadio) ||
+                 (length(internal$plotScaling) == 2 && input$plotScalingRadio != "custom"))) {
                 if (input$plotScalingRadio == "custom") {
                     shinyjs::show('customScalingLayout')
-                }
-                else {
+                } else {
                     shinyjs::hide('customScalingLayout')
                     internal$plotScaling <- input$plotScalingRadio
                 }
@@ -173,8 +173,8 @@ stBoxServer <- function(id,
                                     as.double(input$customScaling2) <= as.double(input$customScaling1)),
                                text = NULL)
 
-                if (is.numeric(type.convert(input$customScaling1)) &&
-                    is.numeric(type.convert(input$customScaling2)) &&
+                if (is.numeric(type.convert(input$customScaling1, as.is = TRUE)) &&
+                    is.numeric(type.convert(input$customScaling2, as.is = TRUE)) &&
                     (as.double(input$customScaling2) > as.double(input$customScaling1))) {
                     internal$plotScaling <- list(input$customScaling1, input$customScaling2)
                 }
