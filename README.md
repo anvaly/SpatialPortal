@@ -9,3 +9,7 @@ Source code is available from [GitHub](https://github.com/anvaly/SpatialPortal) 
 
 Copies of the Seurat data objects can be obtained from: [TBD](https://) and should be placed in the program/data/samples sub-directory before launching the application.
 
+### Requirements
+
+- Shiny >= 1.7.0
+- Fontawesome >= 0.3.0
