@@ -19,14 +19,18 @@ library(rintrojs)
 
 source('program/fxn/stBox_module.R')
 source('program/fxn/supporting.R')
-
+source('program/modules/walkThrough.R')
 
 # -- Setup your Application --
-set_app_parameters(title       = "Spatial Transcriptomics",
+set_app_parameters(title       = "BMS Spatial Portal",
                    titleinfo   = NULL,
                    loglevel    = "DEBUG",
                    showlog     = FALSE,
                    app_version = "2.0")
+
+# login settings
+g_require_password <- TRUE
+g_password_file    <- "program/data/st_pub.pass"
 
 # display defaults
 g_top_n_sig_genes       <- 10

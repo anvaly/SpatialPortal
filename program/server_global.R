@@ -28,6 +28,12 @@ library(Seurat)
 
 # -- VARIABLES --
 
+if (g_require_password) {
+    sg_password <- get_app_password()
+} else {
+    sg_password <- NULL
+}
+
 sg_samples           <- read_samples_data()
 sg_st_objects        <- build_st_data_objects(samples = sg_samples)
 sg_signatures        <- read_signatures()
