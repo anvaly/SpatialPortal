@@ -68,13 +68,17 @@ create_spatial_plot_cx <- function(plot_img_id, seurat, sig_gene_name, features,
         colors <- list("#5E4FA2", "#3E96B7", "#88CFA4", "#D7EF9B", "#FFFFBF", "#FDD380", "#F88D52", "#DC494C", "#9E0142")
         col.pr <- 2
 
-        if (scaling == "trim") { # q1-q99
-            q <- quantile(signal, probs = c(0, 0.01, 0.99, 1), na.rm = TRUE, names = FALSE)
-            breaks <- seq(from = q[2], to = q[3], length.out = length(colors))
-        } else if (scaling == "center") {
-            breaks <- seq(from = 0, to = 1, length.out = length(colors))
-        } else if (is.list(scaling) && (length(scaling) == 2)) {
-            breaks <- seq(from = scaling[[1]], to = scaling[[2]], length.out = length(colors))
+        if (is.list(scaling)) {
+            if (length(scaling) == 2) {
+                breaks <- seq(from = scaling[[1]], to = scaling[[2]], length.out = length(colors))
+            }
+        } else {
+            if (scaling == "trim") { # q1-q99
+                q      <- quantile(signal, probs = c(0, 0.01, 0.99, 1), na.rm = TRUE, names = FALSE)
+                breaks <- seq(from = q[2], to = q[3], length.out = length(colors))
+            } else if (scaling == "center") {
+                breaks <- seq(from = 0, to = 1, length.out = length(colors))
+            }
         }
 
         dr.continue <- quantile(signal, probs = c(0, 0.01, 0.99, 1), na.rm = TRUE, names = FALSE)

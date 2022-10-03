@@ -6,4 +6,4 @@
 !walkthrough_data.csv
 !genes_*
 !meta_data.txt
-!samples
+!samples/**
