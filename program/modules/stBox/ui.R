@@ -69,7 +69,7 @@ stBoxUI <- function(id) {
                                         shinyjs::hidden(
                                             tags$div(id = ns("selectionFeedbackDiv"),
                                                      style = "margin-top: 1px; color: red; width:100%; text-align: end; float: left",
-                                                     tags$b(icon("circle-exclamation"),
+                                                     tags$b(icon("exclamation-circle"),
                                                             "Gene Signature and Single Gene",
                                                             tags$br(),
                                                             "cannot both be selected or blank"))),
@@ -152,7 +152,7 @@ stBoxUI <- function(id) {
                                                                                    placeholder = "1.5"),
                                                                          actionButton(inputId = ns("customScalingBtn"),
                                                                                       label   = "",
-                                                                                      icon    = icon("arrows-rotate"),
+                                                                                      icon    = icon("sync"),
                                                                                       style   = "margin-bottom:10px;overflow-hidden;")))
                                                         )
                                                )

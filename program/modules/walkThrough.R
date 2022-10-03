@@ -26,7 +26,7 @@ walkThroughButton <- function(id,
     shiny::span(
         shiny::actionButton(inputId  = ns("button"),
                             label    = label,
-                            icon     = shiny::icon("circle-info")),
+                            icon     = shiny::icon("info-circle")),
         shinyBS::bsTooltip(id        = ns("button"),
                            title     = hovertext,
                            placement = "top"))
