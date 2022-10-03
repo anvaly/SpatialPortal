@@ -9,7 +9,12 @@ Source code is available from [GitHub](https://github.com/anvaly/SpatialPortal) 
 
 Copies of the Seurat data objects can be obtained from: [TBD](https://) and should be placed in the program/data/samples sub-directory before launching the application.
 
-### Requirements
+### Citation
 
+Lyubetskaya A, Rabe B, Fisher A, Lewin A, Neuhaus I, Brett C, Brett T, Pereira E, Golhar G, Kebede S, Font-Tello A, Mosure L, Van Wittenberghe N, Mavrakis K, MacIsaac K, Chen B, Drokhlyansky E (2022). “Assessment of Spatial Genomics for Oncology Discovery”. Cell Reports Methods. doi: TBA
+
+
+### Application Requirements
+
+- R: 4.0.5
 - Shiny >= 1.7.0
-- Fontawesome >= 0.3.0

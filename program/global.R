@@ -31,7 +31,7 @@ set_app_parameters(title       = "BMS Spatial Portal",
                    app_version = "2.0")
 
 # login settings
-g_require_password <- TRUE
+g_require_password <- FALSE
 g_password_file    <- "program/data/st_pub.pass"
 
 # display defaults
