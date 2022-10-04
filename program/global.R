@@ -17,6 +17,8 @@ library(stringr)
 library(shinyjs)
 library(rintrojs)
 
+options(dplyr.summarise.inform = FALSE)
+
 source('program/fxn/stBox_module.R')
 source('program/fxn/supporting.R')
 source('program/modules/walkThrough.R')
@@ -29,7 +31,7 @@ set_app_parameters(title       = "BMS Spatial Portal",
                    app_version = "2.0")
 
 # login settings
-g_require_password <- TRUE
+g_require_password <- FALSE
 g_password_file    <- "program/data/st_pub.pass"
 
 # display defaults
