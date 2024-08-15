@@ -24,28 +24,17 @@ create_spatial_plot_cx <- function(plot_img_id, seurat, sig_gene_name, features,
 
     if (!is.null(seurat)) {
         buffer.space <- 10   # plot padding around points
-        legend.ff    <- 1    # legendscalefontfactor
-        title.ff     <- 0.5  # titlescalefontfactor
         coordinates  <- Seurat::GetTissueCoordinates(seurat)
         spot_cal     <- get_spot_top_represented_genes(top_genes, features)
         signal       <- get_seurat_object_data(seurat = seurat, items = sig_gene_name)
         var.Annot    <- merge(signal, spot_cal, by.x = 0, by.y = "Coord", all.x = TRUE)
         coord        <- var.Annot$Row.names
-        movable      <- TRUE
 
         var.Annot   <- var.Annot %>%
             select(-c("Row.names"))
 
         colnames(var.Annot) <- c("signal", "top")
         rownames(var.Annot) <- coord
-
-        # changes required for the "small" version of this plot
-        if (is.null(subtitle)) {
-            legend.ff   <- 2
-            title.ff    <- 1
-            file_name   <- glue("{file_name}.Spatial")
-            movable     <- FALSE
-        }
 
         events <- htmlwidgets::JS("{'mousemove' : function(o, e, t) {
                                  if (o != null && o != false &&
@@ -103,51 +92,45 @@ create_spatial_plot_cx <- function(plot_img_id, seurat, sig_gene_name, features,
             # Seurat::SpatialFeaturePlot(seurat, sig_gene_name, "slice1")
 
             plot <- canvasXpress(
-                data                     = coordinates,
-                varAnnot                 = var.Annot,
+                data                      = coordinates,
+                varAnnot                  = var.Annot,
                 ### For interactive testing replace the backgroundImage javascript reference line
                 # backgroundImage        = Seurat::GetImage(seurat, mode = "raw", image = "slice1"),
-                backgroundImage          = glue('javascript://{plot_img_id}'),
-                backgroundType           = "windowImage",
-                colorBy                  = "signal",
-                graphType                = "Scatter2D",
-                scatterType              = "visium",
-                title                    = title,
-                subtitle                 = subtitle,
-                yAxis                    = list("imagerow"),
-                xAxis                    = list("imagecol"),
-                setMinX                  = max(0,   floor(min(coordinates$imagecol) - buffer.space)),
-                setMaxX                  = min(600, ceiling(max(coordinates$imagecol) + buffer.space)),
-                setMinY                  = max(0,   floor(min(coordinates$imagerow) - buffer.space)),
-                setMaxY                  = min(600, ceiling(max(coordinates$imagerow) + buffer.space)),
-                xAxisMajorTicks          = FALSE,
-                xAxisMinorTicks          = FALSE,
-                xAxisShow                = FALSE,
-                yAxisMajorTicks          = FALSE,
-                yAxisMinorTicks          = FALSE,
-                yAxisShow                = FALSE,
-                titleScaleFontFactor     = title.ff,
-                subtitleScaleFontFactor  = 0.3,
-                dataPointSizeScaleFactor = 1.4,
-                scatterOutlineThreshold  = 100000,
-                outlineWidth             = 0.1,
-                transparency             = 1,
-                transparencyHidden       = 0.5,
-                visiumHideWhenFilter     = TRUE,
-                colorSpectrum            = colors,
-                colorSpectrumBreaks      = breaks,
-                filterMode               = "color",
-                missingDataColor         = "#F0F0F0",
-                selectionColor           = "#000000",
-                showLegendTitle          = FALSE,
-                legendScaleFontFactor    = legend.ff,
-                zoomDisable              = TRUE,
-                broadcastGroup           = plot_img_id,
-                noValidate               = TRUE,
-                printMagnification       = 3,
-                movable                  = movable,
-                events                   = events,
-                saveFilename             = file_name)
+                backgroundImage           = glue('javascript://{plot_img_id}'),
+                backgroundType            = "panel",
+                colorBy                   = "signal",
+                title                     = title,
+                subtitle                  = subtitle,
+                yAxis                     = list("imagerow"),
+                xAxis                     = list("imagecol"),
+                setMinX                   = max(0,   floor(min(coordinates$imagecol) - buffer.space)),
+                setMaxX                   = min(600, ceiling(max(coordinates$imagecol) + buffer.space)),
+                setMinY                   = max(0,   floor(min(coordinates$imagerow) - buffer.space)),
+                setMaxY                   = min(600, ceiling(max(coordinates$imagerow) + buffer.space)),
+                dataPointSizeScaleFactor  = 1.4,
+                scatterOutlineThreshold   = 100000,
+                outlineWidth              = 0.1,
+                transparency              = 1,
+                transparencyHidden        = 0.5,
+                visiumHideWhenFilter      = TRUE,
+                visiumFixedAspectRatio    = FALSE,
+                colorSpectrum             = colors,
+                colorSpectrumBreaks       = breaks,
+                filterMode                = "color",
+                missingDataColor          = "#F0F0F0",
+                showLegendTitle           = FALSE,
+                moveable                  = FALSE,
+                broadcastGroup            = plot_img_id,
+                events                    = events,
+                saveFilename              = file_name) %>% add_cx_common_config
+
+            if (is.null(subtitle)) {
+                plot <- plot %>%
+                    add_cx_small_chart_config()
+            } else {
+                plot <- plot %>%
+                    add_cx_large_chart_config()
+            }
         }
     }
 
@@ -192,49 +175,38 @@ create_cluster_plot_cx <- function(plot_img_id, seurat, file_name) {
                                  }
                   }}")
             plot <- canvasXpress(
-                data                     = coordinates,
-                varAnnot                 = var.Annot,
+                data                      = coordinates,
+                varAnnot                  = var.Annot,
                 ### For interactive testing replace the backgroundImage javascript reference line
                 # backgroundImage          = Seurat::GetImage(seurat, mode = "raw", image = "slice1"),
-                backgroundImage          = glue('javascript://{plot_img_id}'),
-                backgroundType           = "windowImage",
-                colorBy                  = "cluster",
-                colorKey                 = list("cluster" = colors),
-                stringVariableFactors    = list("cluster"),
-                graphType                = "Scatter2D",
-                title                    = "Clusters",
-                scatterType              = "visium",
-                yAxis                    = list("imagerow"),
-                xAxis                    = list("imagecol"),
-                setMinX                  = max(0,   floor(min(coordinates$imagecol) - buffer.space)),
-                setMaxX                  = min(600, ceiling(max(coordinates$imagecol) + buffer.space)),
-                setMinY                  = max(0,   floor(min(coordinates$imagerow) - buffer.space)),
-                setMaxY                  = min(600, ceiling(max(coordinates$imagerow) + buffer.space)),
-                xAxisMajorTicks          = FALSE,
-                xAxisMinorTicks          = FALSE,
-                xAxisShow                = FALSE,
-                yAxisMajorTicks          = FALSE,
-                yAxisMinorTicks          = FALSE,
-                yAxisShow                = FALSE,
-                dataPointSizeScaleFactor = 1.4,
-                scatterOutlineThreshold  = 100000,
-                outlineWidth             = 0.1,
-                transparency             = 1,
-                transparencyHidden       = 0.5,
-                visiumHideWhenFilter     = TRUE,
-                filterMode               = "color",
-                missingDataColor         = "#F0F0F0",
-                selectionColor           = "#000000",
-                showLegendTitle          = FALSE,
-                legendScaleFontFactor    = 2,
-                zoomDisable              = TRUE,
-                broadcastGroup           = plot_img_id,
-                noValidate               = TRUE,
-                printMagnification       = 3,
-                movable                  = FALSE,
-                events                   = events,
-                saveFilename             = file_name
-            )
+                backgroundImage           = glue('javascript://{plot_img_id}'),
+                backgroundType            = "panel",
+                colorBy                   = "cluster",
+                colorKey                  = list("cluster" = colors),
+                stringVariableFactors     = list("cluster"),
+                title                     = "Clusters",
+                yAxis                     = list("imagerow"),
+                xAxis                     = list("imagecol"),
+                setMinX                   = max(0,   floor(min(coordinates$imagecol) - buffer.space)),
+                setMaxX                   = min(600, ceiling(max(coordinates$imagecol) + buffer.space)),
+                setMinY                   = max(0,   floor(min(coordinates$imagerow) - buffer.space)),
+                setMaxY                   = min(600, ceiling(max(coordinates$imagerow) + buffer.space)),
+                dataPointSizeScaleFactor  = 1.4,
+                scatterOutlineThreshold   = 100000,
+                outlineWidth              = 0.1,
+                transparency              = 1,
+                transparencyHidden        = 0.5,
+                visiumHideWhenFilter      = TRUE,
+                visiumFixedAspectRatio    = FALSE,
+                filterMode                = "color",
+                missingDataColor          = "#F0F0F0",
+                showLegendTitle           = FALSE,
+                legendTextScaleFontFactor = 1,
+                broadcastGroup            = plot_img_id,
+                movable                   = FALSE,
+                events                    = events,
+                saveFilename              = file_name
+            ) %>% add_cx_common_config
         }
     }
     plot
@@ -258,30 +230,20 @@ create_tissue_plot_cx <- function(plot_img_id, seurat, file_name) {
         clusters     <- get_clusters(seurat = seurat)
 
         plot <- canvasXpress(
-            data               = data.frame(imagerow = -1, imagecol = -1),
+            data                   = data.frame(imagerow = -1, imagecol = -1),
             ### For interactive testing replace the backgroundImage javascript reference line
             # backgroundImage  = Seurat::GetImage(seurat, mode = "raw", image = "slice1"),
-            backgroundImage    = glue('javascript://{plot_img_id}'),
-            backgroundType     = "windowImage",
-            graphType          = "Scatter2D",
-            title              = "Tissue",
-            scatterType        = "visium",
-            setMinX            = max(0,   floor(min(coordinates$imagecol) - buffer.space)),
-            setMaxX            = min(600, ceiling(max(coordinates$imagecol) + buffer.space)),
-            setMinY            = max(0,   floor(min(coordinates$imagerow) - buffer.space)),
-            setMaxY            = min(600, ceiling(max(coordinates$imagerow) + buffer.space)),
-            xAxisMajorTicks    = FALSE,
-            xAxisMinorTicks    = FALSE,
-            xAxisShow          = FALSE,
-            yAxisMajorTicks    = FALSE,
-            yAxisMinorTicks    = FALSE,
-            yAxisShow          = FALSE,
-            zoomDisable        = TRUE,
-            broadcastGroup     = plot_img_id,
-            noValidate         = TRUE,
-            printMagnification = 3,
-            movable            = FALSE,
-            saveFilename       = file_name)
+            backgroundImage        = glue('javascript://{plot_img_id}'),
+            backgroundType         = "panel",
+            title                  = "Tissue",
+            setMinX                = max(0,   floor(min(coordinates$imagecol) - buffer.space)),
+            setMaxX                = min(600, ceiling(max(coordinates$imagecol) + buffer.space)),
+            setMinY                = max(0,   floor(min(coordinates$imagerow) - buffer.space)),
+            setMaxY                = min(600, ceiling(max(coordinates$imagerow) + buffer.space)),
+            broadcastGroup         = plot_img_id,
+            movable                = FALSE,
+            visiumFixedAspectRatio = FALSE,
+            saveFilename           = file_name) %>% add_cx_common_config
     }
     plot
 }
@@ -327,50 +289,39 @@ create_pathology_plot_cx <- function(plot_img_id, seurat, file_name) {
                                  }}}")
 
             plot <- canvasXpress(
-                data                     = coordinates,
-                varAnnot                 = var.Annot,
+                data                      = coordinates,
+                varAnnot                  = var.Annot,
                 ### For interactive testing replace the backgroundImage javascript reference line
                 # backgroundImage        = Seurat::GetImage(seurat, mode = "raw", image = "slice1"),
-                backgroundImage          = glue('javascript://{plot_img_id}'),
-                backgroundType           = "windowImage",
-                colorBy                  = "pathology",
-                colorKey                 = list("pathology" = colors),
-                legendOrder              = list("pathology" = names(colors)),
-                stringVariableFactors    = list("pathology"),
-                graphType                = "Scatter2D",
-                title                    = "Pathology",
-                scatterType              = "visium",
-                yAxis                    = list("imagerow"),
-                xAxis                    = list("imagecol"),
-                setMinX                  = max(0,   floor(min(coordinates$imagecol) - buffer.space)),
-                setMaxX                  = min(600, ceiling(max(coordinates$imagecol) + buffer.space)),
-                setMinY                  = max(0,   floor(min(coordinates$imagerow) - buffer.space)),
-                setMaxY                  = min(600, ceiling(max(coordinates$imagerow) + buffer.space)),
-                xAxisMajorTicks          = FALSE,
-                xAxisMinorTicks          = FALSE,
-                xAxisShow                = FALSE,
-                yAxisMajorTicks          = FALSE,
-                yAxisMinorTicks          = FALSE,
-                yAxisShow                = FALSE,
-                dataPointSizeScaleFactor = 1.4,
-                scatterOutlineThreshold  = 100000,
-                outlineWidth             = 0.1,
-                transparency             = 1,
-                transparencyHidden       = 0.5,
-                visiumHideWhenFilter     = TRUE,
-                colors                   = colors,
-                filterMode               = "color",
-                missingDataColor         = "#F0F0F0",
-                selectionColor           = "#000000",
-                showLegendTitle          = FALSE,
-                legendScaleFontFactor    = 2,
-                zoomDisable              = TRUE,
-                broadcastGroup           = plot_img_id,
-                noValidate               = TRUE,
-                printMagnification       = 3,
-                movable                  = FALSE,
-                events                   = events,
-                saveFilename             = file_name)
+                backgroundImage           = glue('javascript://{plot_img_id}'),
+                backgroundType            = "panel",
+                colorBy                   = "pathology",
+                colorKey                  = list("pathology" = colors),
+                legendOrder               = list("pathology" = names(colors)),
+                stringVariableFactors     = list("pathology"),
+                title                     = "Pathology",
+                yAxis                     = list("imagerow"),
+                xAxis                     = list("imagecol"),
+                setMinX                   = max(0,   floor(min(coordinates$imagecol) - buffer.space)),
+                setMaxX                   = min(600, ceiling(max(coordinates$imagecol) + buffer.space)),
+                setMinY                   = max(0,   floor(min(coordinates$imagerow) - buffer.space)),
+                setMaxY                   = min(600, ceiling(max(coordinates$imagerow) + buffer.space)),
+                dataPointSizeScaleFactor  = 1.4,
+                scatterOutlineThreshold   = 100000,
+                outlineWidth              = 0.1,
+                transparency              = 1,
+                transparencyHidden        = 0.5,
+                visiumHideWhenFilter      = TRUE,
+                visiumFixedAspectRatio    = FALSE,
+                colors                    = colors,
+                filterMode                = "color",
+                missingDataColor          = "#F0F0F0",
+                showLegendTitle           = FALSE,
+                legendTextScaleFontFactor = 1,
+                broadcastGroup            = plot_img_id,
+                movable                   = FALSE,
+                events                    = events,
+                saveFilename              = file_name) %>% add_cx_common_config
         }
     }
     plot
@@ -452,48 +403,47 @@ create_dot_plot_cx <- function(seurat, features, gene_title, file_name) {
                                                   }}")
 
                 plot <- canvasXpress(
-                    data                     = list(y = cx.mean, data2 = cx.pct),
-                    smpAnnot                 = smp.annot,
-                    stringSampleFactors      = list("Cluster"),
-                    graphType                = "Heatmap",
-                    objectBorderColor        = "white",
-                    sizeBy                   = "Percent\nExpressed",
-                    sizes                    = c(3, seq(8, 40, by = 4)),
-                    sizeByData               = "data2",
-                    sizeByContinuous         = TRUE,
-                    colorSpectrum            = list("lightgray", "darkblue"),
-                    colorKey                 = list(Cluster = colors),
-                    yAxisTitle               = "Cluster",
-                    xAxisTitle               = NULL,
-                    title                    = glue("{gene_title} Normalized Expression"),
-                    titleScaleFontFactor     = 0.3,
-                    titleFontStyle           = "bold",
-                    smpOverlays              = list("Cluster"),
-                    smpOverlayProperties     = list(Cluster = list(thickness = 20,
-                                                                   rotate    = 90,
-                                                                   showName  = FALSE,
-                                                                   showBox   = FALSE)),
-                    smpTitleScaleFontFactor  = 0.8,
-                    overlayFontColor         = "white",
-                    overlayFontStyle         = "bold",
-                    overlaysThickness        = 40,
-                    overlayScaleFontFactor   = 10,
-                    smpTitle                 = "Cluster",
-                    samplesClustered         = samplesClustered,
-                    showSmpDendrogram        = FALSE,
-                    variablesClustered       = ifelse(NROW(cx.mean) > 1, TRUE, FALSE),
-                    showVarDendrogram        = FALSE,
-                    varLabelRotate           = 45,
-                    showSampleNames          = FALSE,
-                    showHeatmapIndicator     = TRUE,
-                    heatmapIndicatorPosition = "top",
-                    heatmapIndicatorHeight   = 15,
-                    heatmapIndicatorWidth    = 600,
-                    zoomDisable              = TRUE,
-                    broadcast                = FALSE,
-                    noValidate               = TRUE,
-                    events                   = events,
-                    saveFilename             = file_name)
+                    data                       = list(y = cx.mean, data2 = cx.pct),
+                    smpAnnot                   = smp.annot,
+                    stringSampleFactors        = list("Cluster"),
+                    graphType                  = "Heatmap",
+                    objectBorderColor          = "white",
+                    sizeBy                     = "Percent\nExpressed",
+                    sizes                      = c(3, seq(8, 40, by = 4)),
+                    sizeByData                 = "data2",
+                    sizeByContinuous           = TRUE,
+                    colorSpectrum              = list("lightgray", "darkblue"),
+                    colorKey                   = list(Cluster = colors),
+                    yAxisTitle                 = "Cluster",
+                    xAxisTitle                 = NULL,
+                    title                      = glue("{gene_title} Normalized Expression"),
+                    titleScaleFontFactor       = 0.45,
+                    titleFontStyle             = "bold",
+                    smpOverlays                = list("Cluster"),
+                    smpOverlayProperties       = list(Cluster = list(thickness = 20,
+                                                                     rotate    = 90,
+                                                                     showName  = FALSE,
+                                                                     showBox   = FALSE)),
+                    smpTitleScaleFontFactor    = 0.7,
+                    showNameOverlays           = FALSE,
+                    overlayTextColor           = "white",
+                    overlayTextFontStyle       = "bold",
+                    overlaysThickness          = 45,
+                    overlayTextScaleFontFactor = 1.3,
+                    smpTitle                   = "Cluster",
+                    samplesClustered           = samplesClustered,
+                    showSmpDendrogram          = FALSE,
+                    variablesClustered         = ifelse(NROW(cx.mean) > 1, TRUE, FALSE),
+                    showVarDendrogram          = FALSE,
+                    varTextRotate              = 45,
+                    showSampleNames            = FALSE,
+                    showHeatmapIndicator       = TRUE,
+                    heatmapIndicatorPosition   = "top",
+                    heatmapIndicatorHeight     = 15,
+                    heatmapIndicatorWidth      = 600,
+                    broadcast                  = FALSE,
+                    events                     = events,
+                    saveFilename               = file_name) %>% add_cx_common_config
             }
         }
     }
@@ -546,42 +496,38 @@ create_box_plot_cx <- function(seurat, sig_gene_name, gene_title, file_name) {
                 smp.annot <- data[, "Cluster", drop = FALSE]
 
                 plot <- canvasXpress(
-                    data                    = cx.data,
-                    smpAnnot                = smp.annot,
-                    stringSampleFactors     = list("Cluster"),
-                    groupingFactors         = list("Cluster"),
-                    graphType               = "Boxplot",
-                    showLegend              = FALSE,
-                    smpLabelRotate          = 90,
-                    colorBy                 = "Cluster",
-                    colorKey                = list(Cluster = colors),
-                    smpTitle                = "Cluster",
-                    xAxisTitle              = NULL,
-                    xAxisShow               = FALSE,
-                    title                   = glue("{gene_title} Normalized Expression"),
-                    titleScaleFontFactor    = 0.3,
-                    titleFontStyle          = "bold",
-                    smpOverlays             = list("Cluster"),
-                    showSampleNames         = FALSE,
-                    smpOverlayProperties    = list(Cluster = list(thickness = 20,
-                                                                  rotate    = 90,
-                                                                  showName  = FALSE,
-                                                                  showBox   = FALSE)),
-                    smpTitleScaleFontFactor = 1.5,
-                    overlayFontColor        = "white",
-                    overlayFontStyle        = "bold",
-                    overlaysThickness       = 40,
-                    overlayScaleFontFactor  = 10,
-                    boxplotTransparency     = 1,
-                    boxplotOutliersRatio    = 4,
-                    xAxisTicks              = 10,
-                    axisTickScaleFontFactor = 0.4,
-                    decorations             = list(line = list(list(color = "gray", x = 0))),
-                    selectionColor          = "#000000",
-                    zoomDisable             = TRUE,
-                    broadcast               = FALSE,
-                    noValidate              = TRUE,
-                    saveFilename            = file_name)
+                    data                       = cx.data,
+                    smpAnnot                   = smp.annot,
+                    stringSampleFactors        = list("Cluster"),
+                    groupingFactors            = list("Cluster"),
+                    graphType                  = "Boxplot",
+                    showLegend                 = FALSE,
+                    colorBy                    = "Cluster",
+                    colorKey                   = list(Cluster = colors),
+                    smpTitle                   = "Cluster",
+                    xAxisTitle                 = NULL,
+                    xAxis2Show                 = TRUE,
+                    title                      = glue("{gene_title} Normalized Expression"),
+                    titleScaleFontFactor       = 0.45,
+                    titleFontStyle             = "bold",
+                    smpOverlays                = list("Cluster"),
+                    showSampleNames            = FALSE,
+                    smpOverlayProperties       = list(Cluster = list(thickness = 20,
+                                                                     rotate    = 90,
+                                                                     showBox   = FALSE)),
+                    smpTitleScaleFontFactor    = 1.3,
+                    showNameOverlays           = FALSE,
+                    overlayTextColor           = "white",
+                    overlayTextFontStyle       = "bold",
+                    overlaysThickness          = 45,
+                    overlayTextScaleFontFactor = 10,
+                    boxplotTransparency        = 1,
+                    boxplotOutliersRatio       = 4,
+                    xAxisTicks                 = 10,
+                    xAxisTextScaleFontFactor   = 0.7,
+                    decorations                = list(line = list(list(color = "gray", x = 0))),
+                    broadcast                  = FALSE,
+                    saveFilename               = file_name) %>% add_cx_common_config
             }
         }
     }
@@ -789,4 +735,85 @@ sort_seurat_data <- function(seurat_data, colors, convert_to_character = TRUE) {
 #' @return char - standardized name
 remove_spaces_and_lower_case <- function(group) {
     gsub("[[:space:]]", "", group) %>% tolower()
+}
+
+
+#' add_cx_common_config
+#'   Add different plots common configurations to passed CX plot
+#'
+#' @param cxObject - CX plot object
+#'
+#' @return CX Object
+add_cx_common_config <- function(cxObject) {
+    result <- cxObject
+
+    if (!is.null(result) && is.list(result) && !is.null(result$x) && !is.null(result$x$config)) {
+
+        common_config <- list(
+            graphType                = "Scatter2D",
+            scatterType              = "visium",
+            backgroundType           = "panel",
+
+            xAxisMajorTicks          = FALSE,
+            xAxisMinorTicks          = FALSE,
+            xAxisShow                = FALSE,
+            yAxisMajorTicks          = FALSE,
+            yAxisMinorTicks          = FALSE,
+            yAxisShow                = FALSE,
+            noValidate               = TRUE,
+            printMagnification       = 3,
+            selectionColor           = "#000000",
+            legendBackgroundColor    = "#FFFFFF",
+            legendTitleAlign         = "center",
+            titleAlign               = "center",
+            subtitleAlign            = "center",
+
+            zoomDisable              = TRUE,
+            disableWheel             = TRUE
+        )
+
+        for (item in names(common_config)) {
+            # do not override a value set in the chart configuration
+            if (is.null(result$x$config[[item]])) {
+                result$x$config[item] <- common_config[[item]]
+            }
+        }
+    }
+    result
+}
+
+
+#' add_cx_large_chart_config
+#'     - large plot format used in the single overview and pathology tabs
+#'
+#' @param cx_plot - canvasXpress plot object
+#'
+#' @return canvasXpress plot object
+add_cx_large_chart_config <- function(cx_plot) {
+    cx_plot %>%
+        canvasXpress(disableToolbar            = FALSE,
+                     toolbarItems              = c("Save", "History", "Table", "Explore", "Lasso", "Customize", "Maximize"),
+                     showLegend                = TRUE,
+                     colorByShowLegend         = TRUE,
+                     showLegendTitle           = FALSE,
+                     titleScaleFontFactor      = 0.7,
+                     subtitleScaleFontFactor   = 0.6,
+                     legendTextScaleFontFactor = 1)
+}
+
+
+#' add_cx_small_chart_config
+#'     - small plot format used in the single extended tab
+#'
+#' @param cx_plot - canvasXpress plot object
+#'
+#' @return canvasXpress plot object
+add_cx_small_chart_config <- function(cx_plot) {
+    cx_plot %>%
+        canvasXpress(toolbarItems              = c("Save", "Lasso", "Customize", "Maximize"),
+                     showLegend                = TRUE,
+                     colorByShowLegend         = TRUE,
+                     showLegendTitle           = FALSE,
+                     titleScaleFontFactor      = 0.9,
+                     legendTextScaleFontFactor = 0.7)
 }
