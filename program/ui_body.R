@@ -29,6 +29,8 @@ headerChanges <- tags$head(
         "#walkthroughBtn-button {width:52px; height:45px;}",
         ".fa-info-circle {font-size:18px;}",
         ".st-signature-selectize .selectize-dropdown-content {max-height:50vh;}",
+        ".selectize-dropdown [data-selectable],",
+        ".selectize-dropdown .optgroup-header {padding: 3px 12px;}",
         ".tab-content {margin:0px;padding:0px;}",
         ".viewToggleBtn {border-radius:0px;}"))
 

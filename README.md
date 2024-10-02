@@ -14,6 +14,6 @@ Lyubetskaya A, Rabe B, Fisher A, Lewin A, Neuhaus I, Brett C, Brett T, Pereira E
 
 ### Application Requirements
 
-- R: 4.0.5
+- R: 4.3.3
 - Shiny >= 1.7.0
-- canvasXpress 1.37.0.1+
+- canvasXpress 1.50.5
